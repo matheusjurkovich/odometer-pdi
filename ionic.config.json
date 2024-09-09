@@ -1,0 +1,7 @@
+{
+  "name": "odometer-pdi",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
