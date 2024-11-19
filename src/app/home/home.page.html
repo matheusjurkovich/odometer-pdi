@@ -1,26 +1,14 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>Odometer PDI <ion-icon name="car" size="large"></ion-icon></ion-title>
+    <ion-title>Odometer PDI</ion-title>
   </ion-toolbar>
 </ion-header>
 
-@if(textDetections.length > 0) {
-<ion-content [fullscreen]="true">
-  <ion-list class="ion-margin">
-    @for (item of textDetections; track $index) {
-    <ion-item>
-      <ion-label>{{ item.text }}</ion-label>
-    </ion-item>
-    }
-  </ion-list>
+<ion-content class="main" [fullscreen]="true">
+  <ion-button (click)="scanNow()">
+    <ion-icon name="camera"></ion-icon>
+    <ion-label>Scan Now</ion-label>
+  </ion-button>
+  <ion-input placeholder="Enter Odometer Reading" type="text" [ngModel]="odometer"></ion-input>
 </ion-content>
-}
 
-<ion-tabs>
-  <ion-tab-bar slot="bottom">
-    <ion-tab-button tab="scan" (click)="scanNow()">
-      <ion-icon name="camera"></ion-icon>
-      <ion-label>Scan Now</ion-label>
-    </ion-tab-button>
-  </ion-tab-bar>
-</ion-tabs>
