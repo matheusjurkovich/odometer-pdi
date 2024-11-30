@@ -1,14 +1,45 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>Odometer PDI</ion-title>
+<ion-header class="header">
+  <ion-toolbar class="header__content" color="primary">
+    <ion-title>Registro de Km</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="main" [fullscreen]="true">
-  <ion-button (click)="scanNow()">
-    <ion-icon name="camera"></ion-icon>
-    <ion-label>Scan Now</ion-label>
-  </ion-button>
-  <ion-input placeholder="Enter Odometer Reading" type="text" [ngModel]="odometer"></ion-input>
-</ion-content>
+<ion-content class="ion-padding">
+  <ion-item>
+    <ion-label position="floating">Quilometragem</ion-label>
+    <ion-input [formControl]="formControl"></ion-input>
+  </ion-item>
 
+  <div class="image-container" (click)="selectImage()">
+    <img *ngIf="selectedImage" [src]="selectedImage" alt="Selected image" />
+    <p *ngIf="!selectedImage">Your image will appear here</p>
+  </div>
+
+  <ion-footer class="footer" class="ion-no-border">
+    <ion-toolbar class="footer__content">
+      <ion-buttons slot="start">
+        <ion-button
+          aria-label="Take picture"
+          (click)="takePicture()"
+          color="success"
+        >
+          <ion-icon name="camera" slot="icon-only"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+      <ion-buttons slot="end">
+        <ion-button
+          (click)="uploadImage()"
+          color="primary"
+          [disabled]="!selectedImage"
+        >
+          <ion-icon name="cloud-upload" slot="start"></ion-icon>
+          Enviar
+        </ion-button>
+      </ion-buttons>
+      <ion-loading
+        [isOpen]="this.isLoading()"
+        message="Carregando..."
+      ></ion-loading>
+    </ion-toolbar>
+  </ion-footer>
+</ion-content>
