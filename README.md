@@ -78,7 +78,7 @@ Para executar os testes unitários:
 npm run test
 ```
 
-### Contribbuição
+### Contribuição
 
 Contribuições são bem-vindas! Sinta-se à vontade para abrir issues e pull requests.
 

@@ -1,8 +1,8 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, signal } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
-import { LoadingController, ToastController } from '@ionic/angular';
-import { AlertController } from '@ionic/angular';
+import { ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-home',
@@ -15,11 +15,28 @@ export class HomePage {
   public kilometers = signal<string>('');
   public selectedImage: string | undefined;
   public isLoading = signal<Boolean>(false);
+  public showAlert = signal<Boolean>(false);
+  public alertButtons = [
+    {
+      text: 'Não',
+      role: 'cancel',
+      handler: () => {
+        this.showAlert.set(false);
+      },
+    },
+    {
+      text: 'Sim',
+      role: 'confirm',
+      handler: () => {
+        this.showAlert.set(false);
+        this.formControl.setValue(this.kilometers());
+      },
+    },
+  ];
 
   public constructor(
-    private readonly loading: LoadingController,
-    private readonly alert: AlertController,
-    private readonly toast: ToastController
+    private readonly toast: ToastController,
+    private readonly http: HttpClient
   ) {
     this.formControl = new FormControl('');
   }
@@ -60,7 +77,8 @@ export class HomePage {
 
     if (!this.selectedImage) {
       console.error('No image selected to upload.');
-      return this.isLoading.set(false);
+      this.isLoading.set(false);
+      return;
     }
 
     try {
@@ -69,22 +87,24 @@ export class HomePage {
       const formData = new FormData();
       formData.append('image', blob, 'image.jpg');
 
-      const response = await fetch(`${this.apiUrl}/upload`, {
-        method: 'POST',
-        body: formData,
-      });
-
-      const data = await response.json();
-
-      this.kilometers.set(data.text);
-
-      this.isLoading.set(false);
-
-      return this.showAlert();
+      this.http
+        .post<{ text: string }>(`${this.apiUrl}/upload`, formData)
+        .subscribe({
+          next: (data) => {
+            this.kilometers.set(data.text);
+            this.showAlert.set(true);
+            this.isLoading.set(false);
+          },
+          error: (error) => {
+            console.error('Error uploading image:', error);
+            this.isLoading.set(false);
+            this.errorToast();
+          },
+        });
     } catch (error) {
-      console.error('Error uploading image:', error);
+      console.error('Unexpected error:', error);
       this.isLoading.set(false);
-      return this.errorToast();
+      this.errorToast();
     }
   }
 
@@ -100,28 +120,6 @@ export class HomePage {
     }
 
     return new Blob([u8arr], { type: mime });
-  }
-
-  private async showAlert() {
-    const alert = await this.alert.create({
-      header: 'Confirma o envio?',
-      message: `A quilometragem detectada foi ${this.kilometers()}.`,
-      buttons: [
-        {
-          text: 'Não',
-          role: 'cancel',
-        },
-        {
-          text: 'Sim',
-          role: 'confirm',
-          handler: () => {
-            this.formControl.setValue(this.kilometers());
-          },
-        },
-      ],
-    });
-
-    await alert.present();
   }
 
   private async errorToast() {
