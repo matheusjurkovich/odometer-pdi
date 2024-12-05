@@ -4,6 +4,8 @@
 
 O Odometer PDI é um aplicativo híbrido desenvolvido usando Angular e Capacitor. Ele utiliza Ionic para componentes de UI e se integra com Android para funcionalidades nativas. O objetivo do aplicativo é tirar fotos dos odômetros de veículos, extrair o texto da quilometragem e preencher automaticamente um formulário com a quilometragem atual do veículo.
 
+![odometro](https://github.com/user-attachments/assets/10176aa6-b14c-4208-badc-f583343720de)
+
 ## Estrutura do Projeto
 
 - **.angular/**: Arquivos de cache do Angular.
